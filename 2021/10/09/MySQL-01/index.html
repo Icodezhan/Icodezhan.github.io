@@ -1,0 +1,452 @@
+<!DOCTYPE html><html lang="zh-TW" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MySQL知识笔记（一） | ICodeZhan's Blog</title><meta name="author" content="ICodeZhan"><meta name="copyright" content="ICodeZhan"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="一. 数据库介绍 　数据库是按照数据结构来组织、存储和管理数据的仓库  1.1 数据库管理系统DBMS　　一种操纵和管理数据库的大型软件，用于建立、使用和维护数据库，简称DBMS。　　它对数据库进行统一的管理和控制，以保证数据库的安全性和完整性。　　用户通过DBMS访问数据库中的数据，数据库管理员也通过DBMS进行数据库的维护工作。　　数据库管理系统是数据库系统的核心，是管理数据库的软件。　　我们">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL知识笔记（一）">
+<meta property="og:url" content="http://example.com/2021/10/09/MySQL-01/index.html">
+<meta property="og:site_name" content="ICodeZhan&#39;s Blog">
+<meta property="og:description" content="一. 数据库介绍 　数据库是按照数据结构来组织、存储和管理数据的仓库  1.1 数据库管理系统DBMS　　一种操纵和管理数据库的大型软件，用于建立、使用和维护数据库，简称DBMS。　　它对数据库进行统一的管理和控制，以保证数据库的安全性和完整性。　　用户通过DBMS访问数据库中的数据，数据库管理员也通过DBMS进行数据库的维护工作。　　数据库管理系统是数据库系统的核心，是管理数据库的软件。　　我们">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2021-10-09T13:39:44.000Z">
+<meta property="article:modified_time" content="2021-10-09T17:13:50.940Z">
+<meta property="article:author" content="ICodeZhan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/10/09/MySQL-01/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查詢的內容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '複製成功',
+    error: '複製錯誤',
+    noSupport: '瀏覽器不支援'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切換為繁體","cht_to_chs":"你已切換為簡體","day_to_night":"你已切換為深色模式","night_to_day":"你已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MySQL知识笔记（一）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-10-10 01:13:50'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css" ><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">載入中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">標籤</div><div class="length-num">2</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分類</div><div class="length-num">1</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文檔</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標簽</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 歸檔</span></a></div><div class="menus_item"><a class="site-page" href="/gallery"><i class="fa-fw fas fa-images"></i><span> 相冊</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">ICodeZhan's Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文檔</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標簽</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 歸檔</span></a></div><div class="menus_item"><a class="site-page" href="/gallery"><i class="fa-fw fas fa-images"></i><span> 相冊</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">MySQL知识笔记（一）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2021-10-09T13:39:44.000Z" title="發表於 2021-10-09 21:39:44">2021-10-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2021-10-09T17:13:50.940Z" title="更新於 2021-10-10 01:13:50">2021-10-10</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">3.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>13分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="MySQL知识笔记（一）"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="一-数据库介绍"><a href="#一-数据库介绍" class="headerlink" title="一. 数据库介绍"></a>一. 数据库介绍</h1><blockquote>
+<p>　数据库是按照数据结构来组织、存储和管理数据的仓库</p>
+</blockquote>
+<h2 id="1-1-数据库管理系统DBMS"><a href="#1-1-数据库管理系统DBMS" class="headerlink" title="1.1 数据库管理系统DBMS"></a>1.1 数据库管理系统DBMS</h2><p>　　一种操纵和管理数据库的大型软件，用于建立、使用和维护数据库，简称DBMS。<br>　　它对数据库进行统一的管理和控制，以保证数据库的安全性和完整性。<br>　　用户通过DBMS访问数据库中的数据，数据库管理员也通过DBMS进行数据库的维护工作。<br>　　数据库管理系统是数据库系统的核心，是管理数据库的软件。<br>　　我们一般说的数据库，就是指的DBMS: 数据库服务器</p>
+<h2 id="1-2-常见的数据库"><a href="#1-2-常见的数据库" class="headerlink" title="1.2 常见的数据库"></a>1.2 常见的数据库</h2><ul>
+<li>Oracle:<br>　　运行稳定，可移植性高，功能齐全，性能超群！适用于大型企业领域。</li>
+<li>DB2:<br>　　速度快、可靠性好，适于海量数据，恢复性极强。适用于大中型企业领域。</li>
+<li>MySQL:<br>　　开源，体积小，速度快。适用于于中小型企业领域。</li>
+<li>SQL Server:<br>　　全面，效率高，界面友好，操作容易，但是不跨平台。适用于于中小型企业领域。</li>
+</ul>
+<h2 id="1-3-结构化查询语言SQL"><a href="#1-3-结构化查询语言SQL" class="headerlink" title="1.3 结构化查询语言SQL"></a>1.3 结构化查询语言SQL</h2><p>　　SQL是Structured Quevy Language(结构化查询语言)的缩写。<br>　　SQL语言的功能包括查询、操纵、定义和控制，是一个综合的、通用的关系数据库语言，同时又是一种高度非过程化的语言，只要求用户指出做什么而不需要指出怎么做。</p>
+<ul>
+<li>sql功能分类<ul>
+<li>DDL:数据定义语言<br>用来定义数据库对象：创建库，表，列等。</li>
+<li>DML：数据操作语言<br>用来操作数据库表中的记录</li>
+<li>DQL：数据查询语言<br>用来查询数据</li>
+<li>DCL：数据控制语言<br>用来定义访问权限和安全级别</li>
+</ul>
+</li>
+</ul>
+<h2 id="1-4-非关系型数据库NoSql"><a href="#1-4-非关系型数据库NoSql" class="headerlink" title="1.4 非关系型数据库NoSql"></a>1.4 非关系型数据库NoSql</h2><p>　　例如：MongoDB,Redis,HBase…</p>
+<h1 id="二-MySQL数据库"><a href="#二-MySQL数据库" class="headerlink" title="二. MySQL数据库"></a>二. MySQL数据库</h1><h2 id="2-1-MySql介绍"><a href="#2-1-MySql介绍" class="headerlink" title="2.1 MySql介绍"></a>2.1 MySql介绍</h2><ul>
+<li>MySQL是一个关系型数据库管理系统，由瑞典MySQL AB公司开发，目前属于Oracle公司。MySQL是一种关联数据库管理系统，关联数据库将数据保存在不同的表中，而不是将所有数据放在一个大仓库内，这样就增加了速度并提高了灵活性。</li>
+<li>Mysql是开源的，所以你不需要支付额外的费用。</li>
+<li>Mysql支持大型的数据库。可以处理拥有上千万条记录的大型数据库。</li>
+<li>MySQL使用标准的SQL数据语言形式。</li>
+<li>Mysql可以允许于多个系统上，并且支持多种语言。这些编程语言包括C、C++、Python、Java、Perl、PHP、Eiffel、Ruby和Tcl等。</li>
+</ul>
+<h2 id="2-2-MySql的存储引擎"><a href="#2-2-MySql的存储引擎" class="headerlink" title="2.2 MySql的存储引擎"></a>2.2 MySql的存储引擎</h2><h3 id="2-2-1-什么是存储引擎"><a href="#2-2-1-什么是存储引擎" class="headerlink" title="2.2.1 什么是存储引擎"></a>2.2.1 什么是存储引擎</h3><p>　　MySQL中的数据用各种不同的技术存储在文件（或者内存）中。这些技术中的每一种技术都使用不同的存储机制、索引技巧、锁定水平并且最终提供广泛的不同的功能和能力。通过选择不同的技术，你能够获得额外的速度或者功能，从而改善你的应用的整体功能。<br>　　不同的存储引擎性能是不一样的。</p>
+<h3 id="2-2-2-存储引擎分类"><a href="#2-2-2-存储引擎分类" class="headerlink" title="2.2.2 存储引擎分类"></a>2.2.2 存储引擎分类</h3><ul>
+<li><p>MYISAM：</p>
+<p>它不支持事务，也不支持外键，尤其是访问速度快，对事务完整性没有要求或者以SELECT、INSERT为主的应用基本都可以使用这个引擎来创建表。</p>
+<p>每个MyISAM在磁盘上存储成3个文件，其中文件名和表名都相同，但是扩展名分别为：</p>
+<blockquote>
+<p>.frm(存储表定义)<br>MYD(MYData，存储数据)<br>MYI(MYIndex，存储索引)</p>
+</blockquote>
+</li>
+<li><p>INNODB：<br>InnoDB存储引擎提供了具有提交、回滚和崩溃恢复能力的事务安全。但是对比MyISAM的存储引擎，InnoDB写的处理效率差一些并且会占用更多的磁盘空间以保留数据和索引。</p>
+</li>
+<li><p>MEMORY：<br>memory使用存在内存中的内容来创建表。每个MEMORY表实际对应一个磁盘文件，格式是.frm<br>MEMORY类型的表访问非常快，因为它到数据是放在内存中的，并且默认使用HASH索引，但是一旦服务器关闭，表中的数据就会丢失，但表还会继续存在。</p>
+</li>
+</ul>
+<h2 id="2-3-常用数据库命令"><a href="#2-3-常用数据库命令" class="headerlink" title="2.3 常用数据库命令"></a>2.3 常用数据库命令</h2><ul>
+<li>MySql数据库分为两种：<br>(1)系统数据库（数据库服务器自带的，自带的4个）<br>　　information_schema:存储数据库对象信息如用户表信息,列信息,根除,字符,分区里面的内容我们不能动<br>　　performance_schema:存储数据库服务器性能参数信息<br>　　mysql:存储数据库用户权限信息<br>　　sys:通过这个库可以快速的了解系统的元数据信息，<br>(2)用户数据库<br>　　用户自己创建的数据库,一个项目用一个数据库</li>
+<li>创建数据库<br>create database 数据库名称;</li>
+<li>删除数据库<br>drop database 数据库名称;</li>
+<li>查看数据库<br>show databases;</li>
+<li>使用数据库<br>use 数据库名;</li>
+<li>查看数据库当中有多少张表<br>show tables;</li>
+<li>注意写的顺序,先使用数据库,再去查有多少张表</li>
+</ul>
+<p>　</p>
+<h1 id="三-MySQL数据类型"><a href="#三-MySQL数据类型" class="headerlink" title="三. MySQL数据类型"></a>三. MySQL数据类型</h1><p>MySQL中定义数据字段的类型对你数据库的优化是非常重要的。<br>MySQL支持所有标准SQL数值数据类型。</p>
+<h2 id="3-1-数据类型分类"><a href="#3-1-数据类型分类" class="headerlink" title="3.1 数据类型分类"></a>3.1 数据类型分类</h2><p>MySQL支持多种类型，大致可以分为三类：</p>
+<ul>
+<li><strong>数值类型：</strong><img src="MySQL-01/01.png" alt="01"></li>
+<li><strong>字符串类型：</strong><img src="MySQL-01/02.png" alt="02"></li>
+<li><strong>日期和时间类型：</strong><img src="MySQL-01/03.png" alt="03"></li>
+</ul>
+<h2 id="3-2-常用数据类型"><a href="#3-2-常用数据类型" class="headerlink" title="3.2 常用数据类型"></a>3.2 常用数据类型</h2><ul>
+<li>double：浮点型，例如double(5,2)表示最多5位，其中必须有2位小数，即最大值为999.99；</li>
+<li>char：固定长度字符串类型； char(10) ‘abc ‘</li>
+<li>varchar：可变长度字符串类型；varchar(10) ‘abc’</li>
+<li>text：字符串类型;</li>
+<li>blob：二进制类型；</li>
+<li>date：日期类型，格式为：yyyy-MM-dd；</li>
+<li>time：时间类型，格式为：hh:mm:ss</li>
+<li>datetime:日期时间类型 yyyy-MM-dd hh:mm:ss</li>
+</ul>
+<blockquote>
+<p>在mysql中，字符串类型和日期类型都要用单引号括起来。如： ‘Myxq’ ‘2020-01-01’</p>
+</blockquote>
+<h1 id="四-SQL基础"><a href="#四-SQL基础" class="headerlink" title="四. SQL基础"></a>四. SQL基础</h1><h2 id="4-1-DDL数据定义语言"><a href="#4-1-DDL数据定义语言" class="headerlink" title="4.1 DDL数据定义语言"></a>4.1 DDL数据定义语言</h2><ul>
+<li>创建数据库<br><code>create database 数据库名 character set utf8;</code></li>
+<li>修改数据库<br><code>alter database 数据库名 charactor set gbk;</code></li>
+<li>创建学生表<br><img src="MySQL-01/04.png" alt="04"></li>
+<li>添加一列<br><code>ALTER TABLE 表名 ADD 列名 数据类型;</code></li>
+<li>查看表的字段信息<br><code>DESC 表名;</code></li>
+<li>修改一个表的字段类型<br><code>ALTER TABLE 表名 MODIFY 字段名 数据类型;</code></li>
+<li>删除一列<br><code>ALTER TABLE 表名 DROP 字段名;</code></li>
+<li>修改表名<br><code>RENAME TABLE 原始表名 TO 要修改的表名;</code></li>
+<li>查看表的创建细节<br><code>SHOW CREATE TABLE 表名;</code></li>
+<li>修改表的字符集为gbk<br><code>ALTER TABLE 表名 CHARACTER SET 字符集名称;</code></li>
+<li>修改表的列名<br><code>ALTER TABLE 表名 CHANGE 原始列名 新列名 数据类型;</code></li>
+<li>删除表<br><code>DROP TABLE 表名;</code></li>
+</ul>
+<h2 id="4-2-DML数据操作语言"><a href="#4-2-DML数据操作语言" class="headerlink" title="4.2 DML数据操作语言"></a>4.2 DML数据操作语言</h2><blockquote>
+<p>DML是对表中的数据进行增、删、改的操作</p>
+</blockquote>
+<h3 id="4-2-1-插入操作"><a href="#4-2-1-插入操作" class="headerlink" title="4.2.1 插入操作"></a>4.2.1 插入操作</h3><ul>
+<li><p>```<br>INSERT INTO 表名（列名1，列名2 …）VALUE (列值1，列值2…);</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  - 注意事项：</span><br><span class="line">    列名与列值的类型、个数、顺序要一一对应。</span><br><span class="line">    值不要超出列定义的长度。</span><br><span class="line">    插入的日期和字符一样，都使用引号括起来。</span><br><span class="line"></span><br><span class="line">- 批量插入</span><br><span class="line">  `INSERT INTO 表名（列名1，列名2 ...）VALUES (列值1，列值2...)，(列值1，列值2...);`</span><br><span class="line"></span><br><span class="line">### 4.2.2 更新操作</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  UPDATE 表名 SET 列名1=列值1，列名2=列值2 。。。 WHERE 列名=值</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>把所有学生的分数改为90：<br>update students set score=90</li>
+<li>把姓名为zs的学生分数改为60：<br>update student set score=60 where name=’zs’;</li>
+<li>把姓名为李四的年龄改为20和分数改为70：<br>update student set age=20,score=70 where name=’ls’;</li>
+<li>把wc的年龄在原来基础上加1岁：<br>update students set age=age+1 where name=’wc’;</li>
+<li>修改数据库密码：<br>use mysql;<br>update user set password=password(‘abc’) WHERE User=’root’;<br>update mysql.user set authentication_string=password(‘123456’) where user=’root’ and Host = ‘localhost’;<br>flush privileges; //刷新MySQL的系统权限相关表<br>mysqladmin -u root -p password 12356</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-2-3-删除操作"><a href="#4-2-3-删除操作" class="headerlink" title="4.2.3 删除操作"></a>4.2.3 删除操作</h3><ul>
+<li><code>DELETE FROM 表名 【WHERE 列名=值】</code></li>
+<li><code>TRUNCATE TABLE 表名;</code></li>
+<li>DELETED 与TRUNCATE的区别：<ul>
+<li>DELETE 删除表中的数据，表结构还在;删除后的数据可以找回</li>
+<li>TRUNCATE 删除是把表直接DROP掉，然后再创建一个同样的新表。删除的数据不能找回。执行速度比DELETE快。</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-3-DQL数据查询语言"><a href="#4-3-DQL数据查询语言" class="headerlink" title="4.3 DQL数据查询语言"></a>4.3 DQL数据查询语言</h2><p>查询所有列：<code>SELECT * FROM 表名;</code><br>查询指定列的数据：<code>SELECT 列名1，列表2... FROM 表名;</code></p>
+<h3 id="4-3-1-结果集"><a href="#4-3-1-结果集" class="headerlink" title="4.3.1 结果集"></a>4.3.1 结果集</h3><p>数据库执行DQL语句不会对数据进行改变，而是让数据库发送结果集给客户端。<br>结果集：<br>　　　　通过查询语句查询出来的数据以表的形式展示我们称这个表为虚拟结果集。存放在内存中。<br>　　　　查询返回的结果集是一张虚拟表。</p>
+<h3 id="4-3-2-条件查询"><a href="#4-3-2-条件查询" class="headerlink" title="4.3.2 条件查询"></a>4.3.2 条件查询</h3><blockquote>
+<p>条件查询就是在查询时给出WHERE子句，在WHERE子句中可以使用一些运算符及关键字。</p>
+</blockquote>
+<ul>
+<li><p>条件查询运行符及关键字:<br><code>=（等于）、!=（不等于）、&lt;&gt;（不等于）、&lt;（小于）、&lt;=（小于等于）、&gt;（大于）、&gt;=（大于等于）；</code><br><code>BETWEEN…AND；值在什么范围</code><br><code>IN(set)；固定的范围值</code><br><code>IS NULL；（为空） IS NOT NULL（不为空）</code><br><code>AND；与</code><br><code>OR；或</code><br><code>NOT； 非</code></p>
+</li>
+<li><p>使用:</p>
+<p>查询性别为男，并且年龄为20的学生记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM students WHERE gender=&#x27;男&#x27; AND age=20;</span><br></pre></td></tr></table></figure>
+
+<p>查询学号为1001 或者 名为zs的记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM students WHERE id =&#x27;1001&#x27; OR name=&#x27;zs&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>查询学号为1001，1002，1003的记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM students WHERE id=&#x27;1001&#x27; OR id=&#x27;1002&#x27; OR 1001=&#x27;1003&#x27;;</span><br><span class="line">SELECT * FROM students WHERE id  IN(&#x27;1001&#x27;,&#x27;1002&#x27;,&#x27;1003&#x27;);</span><br><span class="line">SELECT * FROM students WHERE id NOT IN (&#x27;1001&#x27;,&#x27;1002&#x27;,&#x27;1003&#x27;);</span><br></pre></td></tr></table></figure>
+
+<p>查询年龄为null的记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM students WHERE age IS NULL;</span><br></pre></td></tr></table></figure>
+
+<p>查询年龄在18到20之间的学生记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM students WHERE age&gt;=18 AND age&lt;=20;</span><br><span class="line">SELECT * FROM students WHERE age BETWEEN 18 AND 20;</span><br></pre></td></tr></table></figure>
+
+<p>查询性别非男的学生记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM students WHERE gender !=&#x27;男&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>查询姓名不为null的学生记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM students WHERE  name IS NOT  NULL;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="4-3-3-模糊查询"><a href="#4-3-3-模糊查询" class="headerlink" title="4.3.3 模糊查询"></a>4.3.3 模糊查询</h3><blockquote>
+<p>根据指定的关键进行查询<br>使用LIKE关键字后跟通配符</p>
+</blockquote>
+<ul>
+<li><p>通配符：<br><code>_ ：任意一个字符</code><br><code>%：任意0~n个字符</code></p>
+</li>
+<li><p>使用：</p>
+<p>查询姓名由5个字母构成的学生记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM students WHERE name LIKE &#x27;_____&#x27;;</span><br><span class="line">模糊查询必须使用LIKE关键字。其中 “_”匹配任意一个字母，5个“_”表示5个任意字母。</span><br></pre></td></tr></table></figure>
+
+<p>查询姓名由5个字母构成，并且第5个字母为“s”的学生记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM students WHERE name LIKE &#x27;____s&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>查询姓名以“m”开头的学生记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM students WHERE name LIKE &#x27;m%&#x27;;</span><br><span class="line">其中“%”匹配0~n个任何字母。</span><br></pre></td></tr></table></figure>
+
+<p>查询姓名中第2个字母为“u”的学生记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM students WHERE name LIKE &#x27;_u%&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>查询姓名中包含“s”字母的学生记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM stu WHERE name LIKE &#x27;%s%&#x27;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="4-3-4-字段控制查询"><a href="#4-3-4-字段控制查询" class="headerlink" title="4.3.4 字段控制查询"></a>4.3.4 字段控制查询</h3><ul>
+<li>去除重复记录<br><code>SELECT DISTINCT name FROM students;</code></li>
+<li>把查询字段的结果进行运算，必须都要是数据型<br><code>SELECT *,字段1+字段2 FROM 表名;</code><br>列有很多记录的值为NULL，<br>因为任何东西与NULL相加结果还是NULL，所以结算结果可能会出现NULL。<br>下面使用了把NULL转换成数值0的函数IFNULL：<br><code>SELECT *,age+IFNULL(score,0) FROM students;</code></li>
+<li>对查询结果起别名<br>在上面查询中出现列名为sx+IFNULL(yw,0)，这很不美观，现在我们给这一列给出一个别名，为total：<br><code>SELECT *, yw+IFNULL(sx,0) AS total FROM score;</code><br>省略 AS <code>SELECT *, yw+IFNULL(sx,0) total FROM score;</code></li>
+</ul>
+<h3 id="4-3-5-排序"><a href="#4-3-5-排序" class="headerlink" title="4.3.5 排序"></a>4.3.5 排序</h3><blockquote>
+<p>对查询的结果进行排序<br>使用关键字ORDER BY</p>
+</blockquote>
+<ul>
+<li><p>排序类型<br>升序ASC：从小到大 默认<br>降序DESC：从大到小</p>
+</li>
+<li><p>创建案例表：</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `employee` (</span><br><span class="line">  `id` int(11) NOT NULL,</span><br><span class="line">  `name` varchar(50) DEFAULT NULL,</span><br><span class="line">  `gender` varchar(1) DEFAULT NULL,</span><br><span class="line">  `hire_date` date DEFAULT NULL,</span><br><span class="line">  `salary` decimal(10,0) DEFAULT NULL,</span><br><span class="line">  `performance` double(255,0) DEFAULT NULL,</span><br><span class="line">  `manage` double(255,0) DEFAULT NULL,</span><br><span class="line">  `department` varchar(255) DEFAULT NULL</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8;</span><br><span class="line"></span><br><span class="line">INSERT INTO `employee` VALUES (1001, &#x27;张三&#x27;, &#x27;男&#x27;, &#x27;1991-7-25&#x27;, 2000, 200, 500, &#x27;营销部&#x27;);</span><br><span class="line">INSERT INTO `employee` VALUES (1002, &#x27;李四&#x27;, &#x27;男&#x27;, &#x27;2017-7-5&#x27;, 4000, 500, NULL, &#x27;营销部&#x27;);</span><br><span class="line">INSERT INTO `employee` VALUES (1003, &#x27;王五&#x27;, &#x27;女&#x27;, &#x27;2018-5-1&#x27;, 6000, 100, 5000, &#x27;研发部&#x27;);</span><br><span class="line">INSERT INTO `employee` VALUES (1004, &#x27;赵六&#x27;, &#x27;男&#x27;, &#x27;1991-6-1&#x27;, 1000, 3000, 4000, &#x27;财务部&#x27;);</span><br><span class="line">INSERT INTO `employee` VALUES (1005, &#x27;孙七&#x27;, &#x27;女&#x27;, &#x27;2018-3-23&#x27;, 8000, 1000, NULL, &#x27;研发部&#x27;);</span><br><span class="line">INSERT INTO `employee` VALUES (1006, &#x27;周八&#x27;, &#x27;男&#x27;, &#x27;2010-9-8&#x27;, 5000, 500, 1000, &#x27;人事部&#x27;);</span><br><span class="line">INSERT INTO `employee` VALUES (1007, &#x27;吴九&#x27;, &#x27;女&#x27;, &#x27;2017-7-5&#x27;, 8000, 601, NULL, &#x27;研发部&#x27;);</span><br><span class="line">INSERT INTO `employee` VALUES (1008, &#x27;郑十&#x27;, &#x27;女&#x27;, &#x27;2014-4-6&#x27;, 4000, 1801, NULL, &#x27;人事部&#x27;);</span><br></pre></td></tr></table></figure></li>
+<li><p>使用：<br>对所有员工的薪水进行排序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT *FROM employee ORDER BY age ASC;</span><br></pre></td></tr></table></figure>
+
+<p>查询所有学生记录，按年龄降序排序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM employee ORDER BY age DESC;</span><br></pre></td></tr></table></figure>
+
+<p>查询所有雇员，按月薪降序排序，如果月薪相同时，按编号升序排序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM employee ORDER BY salary DESC, id ASC;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="4-3-6-聚合函数"><a href="#4-3-6-聚合函数" class="headerlink" title="4.3.6 聚合函数"></a>4.3.6 聚合函数</h3><blockquote>
+<p>对查询的结果进行统计计算</p>
+</blockquote>
+<ul>
+<li><p>常用聚合函数</p>
+<ul>
+<li>COUNT()：统计指定列不为NULL的记录行数；</li>
+<li>MAX()：计算指定列的最大值，如果指定列是字符串类型，那么使用字符串排序运算；</li>
+<li>MIN()：计算指定列的最小值，如果指定列是字符串类型，那么使用字符串排序运算；</li>
+<li>SUM()：计算指定列的数值和，如果指定列类型不是数值类型，那么计算结果为0；</li>
+<li>AVG()：计算指定列的平均值，如果指定列类型不是数值类型，那么计算结果为0；</li>
+</ul>
+</li>
+<li><p>使用</p>
+<blockquote>
+<p><strong><code>COUNT:</code></strong><br>查询employee表中记录数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT COUNT(*) AS total_record FROM employee;</span><br></pre></td></tr></table></figure>
+
+<p>查询员工表中有绩效的人数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT COUNT(performance)  FROM employee;</span><br></pre></td></tr></table></figure>
+
+<p>查询员工表中月薪大于2500的人数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT COUNT(*) FROM employee WHERE salary &gt; 2500;</span><br></pre></td></tr></table></figure>
+
+<p>统计月薪与绩效之和大于5000元的人数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT COUNT(*)  FROM employee WHERE salary+IFNULL(performance,0) &gt; 5000;</span><br></pre></td></tr></table></figure>
+
+<p>查询有绩效的人数，和有管理费的人数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT COUNT(performance), COUNT(manage) FROM employee;</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>SUM和AVG:</code></strong><br>查询所有雇员月薪和：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT SUM(salary) FROM employee;</span><br></pre></td></tr></table></figure>
+
+<p>查询所有雇员月薪和，以及所有雇员绩效和</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT SUM(salary), SUM(performance) FROM employee;</span><br></pre></td></tr></table></figure>
+
+<p>查询所有雇员月薪+绩效和：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT SUM(salary+IFNULL(performance,0)) FROM employee;</span><br></pre></td></tr></table></figure>
+
+<p>统计所有员工平均工资：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT AVG(salary) FROM employee;</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>MAX和MIN:</code></strong><br>查询最高工资和最低工资：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT MAX(salary), MIN(salary) FROM employee;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ul>
+<p>————————————–本文结束感谢您的阅读————————————–</p>
+<ul>
+<li><strong>本文作者：</strong> Icodezhan</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">ICodeZhan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章連結: </span><span class="post-copyright-info"><a href="http://example.com/2021/10/09/MySQL-01/">http://example.com/2021/10/09/MySQL-01/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="http://example.com" target="_blank">ICodeZhan's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/10/09/MySQL-02/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">MySQL知识笔记（二）</div></div></a></div><div class="next-post pull-right"><a href="/2021/10/09/MyBatis%E6%A1%86%E6%9E%B6/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">MyBatis框架</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">ICodeZhan</div><div class="author-info__description">“江湖再见”</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">標籤</div><div class="length-num">2</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分類</div><div class="length-num">1</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80-%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">一. 数据库介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9FDBMS"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 数据库管理系统DBMS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E5%B8%B8%E8%A7%81%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 常见的数据库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-%E7%BB%93%E6%9E%84%E5%8C%96%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80SQL"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 结构化查询语言SQL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-4-%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93NoSql"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 非关系型数据库NoSql</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C-MySQL%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">2.</span> <span class="toc-text">二. MySQL数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-MySql%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 MySql介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-MySql%E7%9A%84%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 MySql的存储引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1 什么是存储引擎</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-2-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E5%88%86%E7%B1%BB"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2 存储引擎分类</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%91%BD%E4%BB%A4"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 常用数据库命令</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89-MySQL%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">3.</span> <span class="toc-text">三. MySQL数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%88%86%E7%B1%BB"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 数据类型分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 常用数据类型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B-SQL%E5%9F%BA%E7%A1%80"><span class="toc-number">4.</span> <span class="toc-text">四. SQL基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-DDL%E6%95%B0%E6%8D%AE%E5%AE%9A%E4%B9%89%E8%AF%AD%E8%A8%80"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 DDL数据定义语言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-DML%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C%E8%AF%AD%E8%A8%80"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 DML数据操作语言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-1-%E6%8F%92%E5%85%A5%E6%93%8D%E4%BD%9C"><span class="toc-number">4.2.1.</span> <span class="toc-text">4.2.1 插入操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-3-%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C"><span class="toc-number">4.2.2.</span> <span class="toc-text">4.2.3 删除操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-DQL%E6%95%B0%E6%8D%AE%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80"><span class="toc-number">4.3.</span> <span class="toc-text">4.3 DQL数据查询语言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-1-%E7%BB%93%E6%9E%9C%E9%9B%86"><span class="toc-number">4.3.1.</span> <span class="toc-text">4.3.1 结果集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-2-%E6%9D%A1%E4%BB%B6%E6%9F%A5%E8%AF%A2"><span class="toc-number">4.3.2.</span> <span class="toc-text">4.3.2 条件查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-3-%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2"><span class="toc-number">4.3.3.</span> <span class="toc-text">4.3.3 模糊查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-4-%E5%AD%97%E6%AE%B5%E6%8E%A7%E5%88%B6%E6%9F%A5%E8%AF%A2"><span class="toc-number">4.3.4.</span> <span class="toc-text">4.3.4 字段控制查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-5-%E6%8E%92%E5%BA%8F"><span class="toc-number">4.3.5.</span> <span class="toc-text">4.3.5 排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-6-%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0"><span class="toc-number">4.3.6.</span> <span class="toc-text">4.3.6 聚合函数</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/10/09/JQuery%E7%9F%A5%E8%AF%86%E7%AC%94%E8%AE%B0/" title="JQuery知识笔记"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JQuery知识笔记"/></a><div class="content"><a class="title" href="/2021/10/09/JQuery%E7%9F%A5%E8%AF%86%E7%AC%94%E8%AE%B0/" title="JQuery知识笔记">JQuery知识笔记</a><time datetime="2021-10-09T13:43:57.000Z" title="發表於 2021-10-09 21:43:57">2021-10-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/09/Ajax-JSON%E7%AC%94%E8%AE%B0/" title="Ajax&amp;JSON笔记"><img src="/cover/ajax.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Ajax&amp;JSON笔记"/></a><div class="content"><a class="title" href="/2021/10/09/Ajax-JSON%E7%AC%94%E8%AE%B0/" title="Ajax&amp;JSON笔记">Ajax&amp;JSON笔记</a><time datetime="2021-10-09T13:42:38.000Z" title="發表於 2021-10-09 21:42:38">2021-10-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/09/MySQL-03/" title="MySQL知识笔记（三）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL知识笔记（三）"/></a><div class="content"><a class="title" href="/2021/10/09/MySQL-03/" title="MySQL知识笔记（三）">MySQL知识笔记（三）</a><time datetime="2021-10-09T13:40:03.000Z" title="發表於 2021-10-09 21:40:03">2021-10-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/09/MySQL-02/" title="MySQL知识笔记（二）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL知识笔记（二）"/></a><div class="content"><a class="title" href="/2021/10/09/MySQL-02/" title="MySQL知识笔记（二）">MySQL知识笔记（二）</a><time datetime="2021-10-09T13:39:53.000Z" title="發表於 2021-10-09 21:39:53">2021-10-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/09/MySQL-01/" title="MySQL知识笔记（一）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL知识笔记（一）"/></a><div class="content"><a class="title" href="/2021/10/09/MySQL-01/" title="MySQL知识笔记（一）">MySQL知识笔记（一）</a><time datetime="2021-10-09T13:39:44.000Z" title="發表於 2021-10-09 21:39:44">2021-10-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021  <i id="heartbeat" class="fa fas fa-heartbeat"></i> ICodeZhan</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主題 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到頂部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜尋</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'xuKJasrJj8dd1eKMT1MvbA1T-gzGzoHsz',
+      appKey: 'yA40jOlzoHGjXmsPXvB3w5sp',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: true,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script src="/js/cursor.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"right","width":145,"height":315},"mobile":{"show":true,"scale":0.5},"react":{"opacityDefault":0.7,"opacityOnHover":0.8},"log":false});</script></body></html>

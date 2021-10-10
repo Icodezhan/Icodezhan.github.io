@@ -1,0 +1,663 @@
+<!DOCTYPE html><html lang="zh-TW" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MySQL知识笔记（二） | ICodeZhan's Blog</title><meta name="author" content="ICodeZhan"><meta name="copyright" content="ICodeZhan"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="五. 分组查询和完整性5.1 分组查询 将查询结果按照1个或多个字段进行分组，字段值相同的为一组   分组使用SELECT gender from employee GROUP BY gender;根据gender字段来分组，gender字段的全部值只有两个(‘男’和’女’)，所以分为了两组当group by单独使用时，只显示出每组的第一条记录所以group by单独使用时的实际意义不大  分组注">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL知识笔记（二）">
+<meta property="og:url" content="http://example.com/2021/10/09/MySQL-02/index.html">
+<meta property="og:site_name" content="ICodeZhan&#39;s Blog">
+<meta property="og:description" content="五. 分组查询和完整性5.1 分组查询 将查询结果按照1个或多个字段进行分组，字段值相同的为一组   分组使用SELECT gender from employee GROUP BY gender;根据gender字段来分组，gender字段的全部值只有两个(‘男’和’女’)，所以分为了两组当group by单独使用时，只显示出每组的第一条记录所以group by单独使用时的实际意义不大  分组注">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2021-10-09T13:39:53.000Z">
+<meta property="article:modified_time" content="2021-10-09T17:13:50.941Z">
+<meta property="article:author" content="ICodeZhan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/10/09/MySQL-02/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查詢的內容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '複製成功',
+    error: '複製錯誤',
+    noSupport: '瀏覽器不支援'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切換為繁體","cht_to_chs":"你已切換為簡體","day_to_night":"你已切換為深色模式","night_to_day":"你已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MySQL知识笔记（二）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-10-10 01:13:50'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css" ><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">載入中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">標籤</div><div class="length-num">2</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分類</div><div class="length-num">1</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文檔</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標簽</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 歸檔</span></a></div><div class="menus_item"><a class="site-page" href="/gallery"><i class="fa-fw fas fa-images"></i><span> 相冊</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">ICodeZhan's Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文檔</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標簽</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 歸檔</span></a></div><div class="menus_item"><a class="site-page" href="/gallery"><i class="fa-fw fas fa-images"></i><span> 相冊</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">MySQL知识笔记（二）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2021-10-09T13:39:53.000Z" title="發表於 2021-10-09 21:39:53">2021-10-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2021-10-09T17:13:50.941Z" title="更新於 2021-10-10 01:13:50">2021-10-10</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">6.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>26分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="MySQL知识笔记（二）"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="五-分组查询和完整性"><a href="#五-分组查询和完整性" class="headerlink" title="五. 分组查询和完整性"></a>五. 分组查询和完整性</h1><h2 id="5-1-分组查询"><a href="#5-1-分组查询" class="headerlink" title="5.1 分组查询"></a>5.1 分组查询</h2><blockquote>
+<p>将查询结果按照1个或多个字段进行分组，字段值相同的为一组</p>
+</blockquote>
+<ul>
+<li><p>分组使用<br><code>SELECT gender from employee GROUP BY gender;</code><br>根据gender字段来分组，gender字段的全部值只有两个(‘男’和’女’)，所以分为了两组<br>当group by单独使用时，只显示出每组的第一条记录<br>所以group by单独使用时的实际意义不大</p>
+</li>
+<li><p>分组注意事项<br>在使用分组时，select后面直接跟的字段一般都出现在group by 后</p>
+</li>
+<li><p>group by + group_concat()<br>group_concat(字段名)可以作为一个输出字段来使用<br>表示分组之后，根据分组结果，使用group_concat()来放置每一组的某字段的值的集合<br><code>SELECT gender,GROUP_CONCAT(name) from employee GROUP BY gender;</code><br><img src="MySQL-02/01.png" alt="01"></p>
+</li>
+<li><p>group by + 聚合函数<br>通过group_concat()的启发，我们既然可以统计出每个分组的某字段的值的集合，那么我们也可以通过集合函数来对这个“值的集合”做一些操作</p>
+<ul>
+<li><p>使用</p>
+<p>查询每个部门的部门名称和每个部门的工资和</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT department,SUM(salary) FROM employee GROUP BY department;</span><br></pre></td></tr></table></figure>
+
+<p>查询每个部门的部门名称以及每个部门的人数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT department,COUNT(*) FROM employee GROUP BY department;</span><br></pre></td></tr></table></figure>
+
+<p>查询每个部门的部门名称以及每个部门工资大于1500的人数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT department,COUNT(salary) FROM employee WHERE salary &gt; 1500 GROUP BY department;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>group by + having</p>
+<blockquote>
+<p>用来分组查询后指定一些条件来输出查询结果<br>having作用和where一样，但having只能用于group by</p>
+</blockquote>
+<ul>
+<li><p>查询工资总和大于9000的部门名称以及工资和：</p>
+<p>（1）查询每个部分的工资总和</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT department,GROUP_CONCAT(salary) FROM employee GROUP BY department;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT department,SUM(salary) FROM employee GROUP BY department;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>（2）总和大于9000</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT department,SUM(salary) FROM employee GROUP BY department HAVING SUM(salary)&gt;9000;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>having与where的区别：</p>
+<ul>
+<li>having是在分组后对数据进行过滤.</li>
+<li>where是在分组前对数据进行过滤</li>
+<li>having后面可以使用分组函数(统计函数)</li>
+<li>where后面不可以使用分组函数</li>
+<li>WHERE是对分组前记录的条件，如果某行记录没有满足WHERE子句的条件，那么这行记录不会参加分组；而HAVING是对分组后数据的约束。</li>
+</ul>
+</li>
+<li><p>查询工资大于2000的，工资总和大于6000的部门名称以及工资和：</p>
+<blockquote>
+<ul>
+<li><p>查询工资大于2000的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM employee WHERE salary &gt;2000;</span><br></pre></td></tr></table></figure></li>
+<li><p>各部门工资</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT department, GROUP_CONCAT(salary) FROM employee </span><br><span class="line">WHERE salary &gt;2000 GROUP BY department;</span><br></pre></td></tr></table></figure></li>
+<li><p>各部门工资总和</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT department, SUM(salary) FROM employee WHERE salary &gt;2000 GROUP BY department;</span><br></pre></td></tr></table></figure></li>
+<li><p>各部门工资总和大于6000</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT department, SUM(salary) FROM employee WHERE salary &gt;2000 </span><br><span class="line">GROUP BY department HAVING SUM(salary)&gt;6000;</span><br></pre></td></tr></table></figure></li>
+<li><p>各部门工资总和大于6000降序排列</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SELECT department, SUM(salary) FROM employee </span><br><span class="line">WHERE salary &gt;2000 </span><br><span class="line">GROUP BY department </span><br><span class="line">HAVING SUM(salary)&gt;6000 </span><br><span class="line">ORDER BY SUM(salary) DESC;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</blockquote>
+</li>
+<li><p>书写顺序和执行顺序</p>
+<blockquote>
+<p>书写顺序：<br><img src="MySQL-02/10.png" alt="01"><br>执行顺序：<br><img src="MySQL-02/11.png" alt="01"></p>
+</blockquote>
+</li>
+</ul>
+<h2 id="5-2-LIMIT"><a href="#5-2-LIMIT" class="headerlink" title="5.2 LIMIT"></a>5.2 LIMIT</h2><blockquote>
+<p>从哪一行开始查，总共要查几行</p>
+</blockquote>
+<ul>
+<li><code>Limit 参数1，参数2</code><br>参数1：从哪一行开始查<br>参数2：一共要查几行<br>角标是从0开始</li>
+<li>格式：<code>select * from 表名 limit 0,3;</code><br>分页思路:<br><img src="MySQL-02/12.png" alt="01"></li>
+</ul>
+<h2 id="5-3-数据的完整性"><a href="#5-3-数据的完整性" class="headerlink" title="5.3 数据的完整性"></a>5.3 数据的完整性</h2><ul>
+<li>什么是数据的完整性<br>保证用户输入的数据保存到数据库中是正确的。</li>
+<li>如何添加数据完整性<br>在创建表时给表中添加约束</li>
+<li>完整性分类<ul>
+<li>实体完整性</li>
+<li>域完整性</li>
+<li>引用完整性</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-4-实体完整性"><a href="#5-4-实体完整性" class="headerlink" title="5.4 实体完整性"></a>5.4 实体完整性</h2><ul>
+<li>什么是实体完整性<br>表中的一行(一条记录)代表一个实体（entity）</li>
+<li>实体完整性的作用<br>标识每一行数据不重复。行级约束</li>
+<li>约束类型<ul>
+<li>主键约束（primary key）</li>
+<li>唯一约束(unique)</li>
+<li>自动增长列(auto_increment)</li>
+</ul>
+</li>
+<li>① 主键约束<ul>
+<li>特点：<br>每个表中要有一个主键<br>数据唯一，且不能为null</li>
+<li>添加方式：<br><code>CREATE TABLE 表名(字段名1 数据类型 primary key,字段2 数据类型);</code><br><code>CREATE TABLE 表名(字段1 数据类型, 字段2 数据类型,primary key(要设置主键的字段));</code><br><code>CREATE TABLE 表名(字段1 数据类型, 字段2 数据类型,primary key(主键1，主键2));</code><br><code>联合主键：两个字段数据同时相同时，才违反联合主键约束。</code><br><code>先创建表 ,再去修改表，添加主键: ALTER TABLE student ADD CONSTRAINT PRIMARY KEY (id);</code></li>
+</ul>
+</li>
+<li>② 唯一约束<ul>
+<li>特点<br>指定列的数据不能重复<br>可以为空值</li>
+<li>格式<br><code>CREATE TABLE 表名(字段名1 数据类型 字段2 数据类型 UNIQUE);</code></li>
+</ul>
+</li>
+<li>③ 自动增长列<ul>
+<li>特点<br>指定列的数据自动增长<br>即使数据删除，还是从删除的序号继续往下</li>
+<li>格式：<br><code>CREATE TABLE 表名(字段名1 数据类型 PRIMARY KEY AUTO_INCREMENT ，字段2 数据类型 UNIQUE);</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="5-5-域完整性"><a href="#5-5-域完整性" class="headerlink" title="5.5 域完整性"></a>5.5 域完整性</h2><ul>
+<li>使用：<br>限制此单元格的数据正确，不对照此列的其它单元格比较<br>域代表当前单元格</li>
+<li>域完整性约束<ul>
+<li>数据类型：<br>数值类型、日期类型、字符串类型</li>
+<li>非空约束（not null）：<br><code>CREATE TABLE 表名(字段名1 数据类型 PRIMARY KEY AUTO_INCREMENT ，字段2 数据类型 UNIQUE not null);</code></li>
+<li>默认值约束(default) ：<br><code>CREATE TABLE 表名(字段名1 数据类型 PRIMARY KEY AUTO_INCREMENT ，字段2 数据类型 UNIQUE not null default &#39;男&#39;);</code><br>插入的时候，values当中的值直接给default</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-6-参照完整性"><a href="#5-6-参照完整性" class="headerlink" title="5.6 参照完整性"></a>5.6 参照完整性</h2><ul>
+<li>什么是参照完整性<br>是指表与表之间的一种对应关系<br>通常情况下可以通过设置两表之间的主键、外键关系，或者编写两表的触发器来实现。<br>有对应参照完整性的两张表格，在对他们进行数据插入、更新、删除的过程中，系统都会将被修改表格与另一张对应表格进行对照，从而阻止一些不正确的数据的操作。</li>
+<li>数据库的主键和外键类型一定要一致；</li>
+<li>两个表必须得要是InnoDB类型</li>
+<li>设置参照完整性后 ，外键当中的内值，必须得是主键当中的内容</li>
+<li>一个表设置当中的字段设置为主键，设置主键的为主表：<br><code>CREATE TABLE student(sid int PRIMARY key,name varchar(50) not null,sex varchar(10) default &#39;男&#39;);</code></li>
+<li>创建表时，设置外键，设置外键的为子表<br><code>CREATE TABLE score( sid INT, score DOUBLE, CONSTRAINT fk_stu_score_sid FOREIGN KEY(sid) REFERENCES student(sid));</code><br><img src="MySQL-02/13.png" alt="01"></li>
+</ul>
+<h1 id="六-多表查询"><a href="#六-多表查询" class="headerlink" title="六. 多表查询"></a>六. 多表查询</h1><h2 id="6-1-表之间关系"><a href="#6-1-表之间关系" class="headerlink" title="6.1 表之间关系"></a>6.1 表之间关系</h2><ul>
+<li><p>一对一：<br>一夫一妻<br><img src="MySQL-02/14.png" alt="01"></p>
+</li>
+<li><p>一对多关系：<br>例如：一个人可以拥有多辆汽车，要求查询某个人拥有的所有车辆。<br>① 创建Person表:</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE person (</span><br><span class="line">	id int PRIMARY KEY NOT NULL,</span><br><span class="line">	name VARCHAR(50),</span><br><span class="line">	age INT,</span><br><span class="line">	sex CHAR(1),</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>② 创建Car表:</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE car (</span><br><span class="line">	cid int PRIMARY KEY,</span><br><span class="line">	cname VARCHAR(50),</span><br><span class="line">	color VARCHAR(25),</span><br><span class="line">	pid INT,</span><br><span class="line">	CONSTRAINT fk_person FOREIGN KEY (pid) PEFERENCES person(id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><img src="MySQL-02/17.png" alt="01"></p>
+</li>
+<li><p>多对多关系：<br>例如：学生选课，一个学生可以选修多门课程，每门课程可供多个学生选择。<br>一个学生可以有多个老师，而一个老师也可以有多个学生<br>① 创建老师表</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE teacher (</span><br><span class="line">	tid int PRIMARY KEY auto_increment,</span><br><span class="line">	name VARCHAR(50),</span><br><span class="line">	age INT,</span><br><span class="line">	gender char(1) DEFAULT &#x27;男&#x27;,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>② 创建学生表</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE student (</span><br><span class="line">	sid int PRIMARY KEY auto_increment,</span><br><span class="line">	name VARCHAR(50) NOT NULL,</span><br><span class="line">	age int,</span><br><span class="line">	gender char(1) DEFAULT &#x27;男&#x27;,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>③ 创建学生与老师关系表</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE tea_stu_rel (</span><br><span class="line">	tid INT,</span><br><span class="line">	sid INT,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><img src="MySQL-02/21.png" alt="01"></p>
+<p>④ 添加外键</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE tea_stu_rel ADD CONSTRAINT fk_tid FOREIGN KEY(tid) REFERENCES teacher(tid);</span><br><span class="line">ALTER TABLE tea_stu_rel ADD CONSTRAINT fk_sid FOREIGN KEY(sid) REFERENCES teacher(sid);</span><br></pre></td></tr></table></figure></li>
+<li><p>为什么要拆分表，避免大量冗余数据的出现<br><img src="MySQL-02/22.png" alt="01"><img src="MySQL-02/23.png" alt="01"></p>
+</li>
+</ul>
+<h2 id="6-2-合并结果集"><a href="#6-2-合并结果集" class="headerlink" title="6.2 合并结果集"></a>6.2 合并结果集</h2><ul>
+<li><p>什么是合并结果集<br>合并结果集就是把两个select语句的查询结果合并到一起</p>
+</li>
+<li><p>合并结果集的两种方式</p>
+<ul>
+<li>UNION：合并时去除重复记录</li>
+<li>UNION ALL：合并时不去除重复记录</li>
+</ul>
+</li>
+<li><p>格式：<br>UNION关键字：</p>
+<ul>
+<li><code>SELECT * FROM 表1 UNION SELECT * FROM 表2；</code></li>
+<li><code>SELECT * FROM 表1 UNION ALL SELECT * FROM 表2;</code></li>
+</ul>
+</li>
+<li><p>示例<br>① 创建表：<br><img src="MySQL-02/24.png" alt="01"><br>② UNION：<br><img src="MySQL-02/25.png" alt="01"><br>③ UNION ALL：<br><img src="MySQL-02/26.png" alt="01"></p>
+</li>
+<li><p>注意事项</p>
+<blockquote>
+<p>被合并的两个结果：列数、列类型必须相同。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="6-3-连接查询"><a href="#6-3-连接查询" class="headerlink" title="6.3 连接查询"></a>6.3 连接查询</h2><ul>
+<li><p>(1) 什么是连接查询<br>也可以叫跨表查询，需要关联多个表进行查询</p>
+</li>
+<li><p>(2) 什么是笛卡尔集</p>
+<p>假设集合A={a,b}，集合B={0,1,2}，</p>
+<p>则两个集合的笛卡尔积为{(a,0),(a,1),(a,2),(b,0),(b,1),(b,2)}。</p>
+<p>可以扩展到多个集合的情况</p>
+<ul>
+<li>同时查询两个表，出现的就是笛卡尔集结果：<br>例如查询下面2个表：<img src="MySQL-02/27.png" alt="01"><br>SQL语句：<code>SELECT * FROM stu,score;</code><br>查询时可以给表起别名：<code>SELECT * FROM stu st,score sc;</code></li>
+</ul>
+</li>
+<li><p>(3) 多表联查，如何保证数据正确</p>
+<ul>
+<li>在查询时要把主键和外键保持一致<br><img src="MySQL-02/28.png" alt="01"></li>
+<li>主表当中的数据参照子表当中的数据</li>
+<li>原理<br>逐行判断，相等的留下，不相等的全不要<br><img src="MySQL-02/30.png" alt="01"></li>
+</ul>
+</li>
+</ul>
+<h3 id="6-3-1-内连接"><a href="#6-3-1-内连接" class="headerlink" title="6.3.1 内连接"></a>6.3.1 内连接</h3><ul>
+<li><p>等值连接<br>两个表同时出现的id号（值）才显示<img src="MySQL-02/31.png" alt="01"></p>
+<p>与多表联查约束主外键是一样，只是写法改变了。<br>ON后面只写主外键<br>如果还有条件直接在后面写where<br><img src="MySQL-02/32.png" alt="01"></p>
+<p>多表联查后面还有条件就直接写and</p>
+</li>
+<li><p>多表连接<br>建立学生，分数，科目表<br><img src="MySQL-02/33.png" alt="01"><br>使用99连接法<br><img src="MySQL-02/34.png" alt="01"><br>使用内联查询<br><img src="MySQL-02/35.png" alt="01"></p>
+</li>
+<li><p>非等值连接</p>
+<ul>
+<li><p>示例表<br><img src="MySQL-02/36.png" alt="01"></p>
+</li>
+<li><p>建表语句<br>① 建立员工表**<code>emp</code>**：</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `emp` (</span><br><span class="line">  `empno` int(11) NOT NULL,</span><br><span class="line">  `ename` varchar(255) DEFAULT NULL,</span><br><span class="line">  `job` varchar(255) DEFAULT NULL,</span><br><span class="line">  `mgr` varchar(255) DEFAULT NULL,</span><br><span class="line">  `hiredate` date DEFAULT NULL,</span><br><span class="line">  `salary` decimal(10,0) DEFAULT NULL,</span><br><span class="line">  `comm` double DEFAULT NULL,</span><br><span class="line">  `deptno` int(11) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (`empno`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8;</span><br></pre></td></tr></table></figure>
+
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `emp` VALUES (7369, &#x27;孙悟空&#x27;, &#x27;职员&#x27;, &#x27;7902&#x27;, &#x27;2010-12-17&#x27;, 800, NULL, 20);</span><br><span class="line">INSERT INTO `emp` VALUES (7499, &#x27;孙尚香&#x27;, &#x27;销售人员&#x27;, &#x27;7698&#x27;, &#x27;2011-2-20&#x27;, 1600, 300, 30);</span><br><span class="line">INSERT INTO `emp` VALUES (7521, &#x27;李白&#x27;, &#x27;销售人员&#x27;, &#x27;7698&#x27;, &#x27;2011-2-22&#x27;, 1250, 500, 30);</span><br><span class="line">INSERT INTO `emp` VALUES (7566, &#x27;程咬金&#x27;, &#x27;经理&#x27;, &#x27;7839&#x27;, &#x27;2011-4-2&#x27;, 2975, NULL, 20);</span><br><span class="line">INSERT INTO `emp` VALUES (7654, &#x27;妲己&#x27;, &#x27;销售人员&#x27;, &#x27;7698&#x27;, &#x27;2011-9-28&#x27;, 1250, 1400, 30);</span><br><span class="line">INSERT INTO `emp` VALUES (7698, &#x27;兰陵王&#x27;, &#x27;经理&#x27;, &#x27;7839&#x27;, &#x27;2011-5-1&#x27;, 2854, NULL, 30);</span><br><span class="line">INSERT INTO `emp` VALUES (7782, &#x27;虞姬&#x27;, &#x27;经理&#x27;, &#x27;7839&#x27;, &#x27;2011-6-9&#x27;, 2450, NULL, 10);</span><br><span class="line">INSERT INTO `emp` VALUES (7788, &#x27;项羽&#x27;, &#x27;检查员&#x27;, &#x27;7566&#x27;, &#x27;2017-4-19&#x27;, 3000, NULL, 20);</span><br><span class="line">INSERT INTO `emp` VALUES (7839, &#x27;张飞&#x27;, &#x27;总裁&#x27;, NULL, &#x27;2010-6-12&#x27;, 5000, NULL, 10);</span><br><span class="line">INSERT INTO `emp` VALUES (7844, &#x27;蔡文姬&#x27;, &#x27;销售人员&#x27;, &#x27;7698&#x27;, &#x27;2011-9-8&#x27;, 1500, 0, 30);</span><br><span class="line">INSERT INTO `emp` VALUES (7876, &#x27;阿珂&#x27;, &#x27;职员&#x27;, &#x27;7788&#x27;, &#x27;2017-5-23&#x27;, 1100, NULL, 20);</span><br><span class="line">INSERT INTO `emp` VALUES (7900, &#x27;刘备&#x27;, &#x27;职员&#x27;, &#x27;7698&#x27;, &#x27;2011-12-3&#x27;, 950, NULL, 30);</span><br><span class="line">INSERT INTO `emp` VALUES (7902, &#x27;诸葛亮&#x27;, &#x27;检查员&#x27;, &#x27;7566&#x27;, &#x27;2011-12-3&#x27;, 3000, NULL, 20);</span><br><span class="line">INSERT INTO `emp` VALUES (7934, &#x27;鲁班&#x27;, &#x27;职员&#x27;, &#x27;7782&#x27;, &#x27;2012-1-23&#x27;, 1300, NULL, 10);</span><br></pre></td></tr></table></figure>
+
+<p>② 建立部门表**<code>dept</code>**：</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `dept` (</span><br><span class="line">  `deptno` bigint(2) NOT NULL AUTO_INCREMENT COMMENT &#x27;表示部门编号，由两位数字所组成&#x27;,</span><br><span class="line">  `dname` varchar(14) DEFAULT NULL COMMENT &#x27;部门名称，最多由14个字符所组成&#x27;,</span><br><span class="line">  `local` varchar(13) DEFAULT NULL COMMENT &#x27;部门所在的位置&#x27;,</span><br><span class="line">  PRIMARY KEY (`deptno`)</span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;</span><br></pre></td></tr></table></figure>
+
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `dept` VALUES (10, &#x27;财务部&#x27;, &#x27;北京&#x27;);</span><br><span class="line">INSERT INTO `dept` VALUES (20, &#x27;调研部&#x27;, &#x27;上海&#x27;);</span><br><span class="line">INSERT INTO `dept` VALUES (30, &#x27;销售部&#x27;, &#x27;王者峡谷&#x27;);</span><br><span class="line">INSERT INTO `dept` VALUES (40, &#x27;运营部&#x27;, &#x27;腾讯大楼&#x27;);</span><br></pre></td></tr></table></figure>
+
+<p>③ 建立薪水表**<code>salgrade</code>**：</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `salgrade` (</span><br><span class="line">  `grade` bigint(11) NOT NULL AUTO_INCREMENT COMMENT &#x27;工资等级&#x27;,</span><br><span class="line">  `lowSalary` int(11) DEFAULT NULL COMMENT &#x27;此等级的最低工资&#x27;,</span><br><span class="line">  `highSalary` int(11) DEFAULT NULL COMMENT &#x27;此等级的最高工资&#x27;,</span><br><span class="line">  PRIMARY KEY (`grade`)</span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;</span><br></pre></td></tr></table></figure>
+
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `salgrade` VALUES (1, 700, 1200);</span><br><span class="line">INSERT INTO `salgrade` VALUES (2, 1201, 1400);</span><br><span class="line">INSERT INTO `salgrade` VALUES (3, 1401, 2000);</span><br><span class="line">INSERT INTO `salgrade` VALUES (4, 2001, 3000);</span><br><span class="line">INSERT INTO `salgrade` VALUES (5, 3001, 9999);</span><br></pre></td></tr></table></figure></li>
+<li><p>查询所有员工的姓名，工资，所在部门的名称以及工资的等级<br>① 查询所有员工的姓名，工资</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">select ename,salary from emp;</span><br><span class="line">+--------+--------+</span><br><span class="line">| ename  | salary |</span><br><span class="line">+--------+--------+</span><br><span class="line">| 孙悟空 |    800 |</span><br><span class="line">| 孙尚香 |   1600 |</span><br><span class="line">| 李白   |   1250 |</span><br><span class="line">| 程咬金 |   2975 |</span><br><span class="line">| 妲己   |   1250 |</span><br><span class="line">| 兰陵王 |   2854 |</span><br><span class="line">| 虞姬   |   2450 |</span><br><span class="line">| 项羽   |   3000 |</span><br><span class="line">| 张飞   |   5000 |</span><br><span class="line">| 蔡文姬 |   1500 |</span><br><span class="line">| 阿珂   |   1100 |</span><br><span class="line">| 刘备   |    950 |</span><br><span class="line">| 诸葛亮 |   3000 |</span><br><span class="line">| 鲁班   |   1300 |</span><br><span class="line">+--------+--------+</span><br><span class="line">14 rows in set (0.04 sec)</span><br></pre></td></tr></table></figure>
+
+<p>② 查询所有员工的姓名，工资和所有部门</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">select e.ename,e.salary,d.dname from emp e JOIN dept d ON e.deptno = d.deptno;</span><br><span class="line">+--------+--------+--------+</span><br><span class="line">| ename  | salary | dname  |</span><br><span class="line">+--------+--------+--------+</span><br><span class="line">| 孙悟空 |    800 | 调研部 |</span><br><span class="line">| 孙尚香 |   1600 | 销售部 |</span><br><span class="line">| 李白   |   1250 | 销售部 |</span><br><span class="line">| 程咬金 |   2975 | 调研部 |</span><br><span class="line">| 妲己   |   1250 | 销售部 |</span><br><span class="line">| 兰陵王 |   2854 | 销售部 |</span><br><span class="line">| 虞姬   |   2450 | 财务部 |</span><br><span class="line">| 项羽   |   3000 | 调研部 |</span><br><span class="line">| 张飞   |   5000 | 财务部 |</span><br><span class="line">| 蔡文姬 |   1500 | 销售部 |</span><br><span class="line">| 阿珂   |   1100 | 调研部 |</span><br><span class="line">| 刘备   |    950 | 销售部 |</span><br><span class="line">| 诸葛亮 |   3000 | 调研部 |</span><br><span class="line">| 鲁班   |   1300 | 财务部 |</span><br><span class="line">+--------+--------+--------+</span><br><span class="line">14 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>③ 查询所有员工的姓名，工资和所在部门及工资等级</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">select e.ename,e.salary,d.dname,g.grade FROM emp e</span><br><span class="line">JOIN dept d ON e.deptno = d.deptno</span><br><span class="line">JOIN salgrade g ON e.salary</span><br><span class="line">BETWEEN g.lowSalary AND g.highSalary;</span><br><span class="line">+--------+--------+--------+-------+</span><br><span class="line">| ename  | salary | dname  | grade |</span><br><span class="line">+--------+--------+--------+-------+</span><br><span class="line">| 孙悟空 |    800 | 调研部 |     1 |</span><br><span class="line">| 孙尚香 |   1600 | 销售部 |     3 |</span><br><span class="line">| 李白   |   1250 | 销售部 |     2 |</span><br><span class="line">| 程咬金 |   2975 | 调研部 |     4 |</span><br><span class="line">| 妲己   |   1250 | 销售部 |     2 |</span><br><span class="line">| 兰陵王 |   2854 | 销售部 |     4 |</span><br><span class="line">| 虞姬   |   2450 | 财务部 |     4 |</span><br><span class="line">| 项羽   |   3000 | 调研部 |     4 |</span><br><span class="line">| 张飞   |   5000 | 财务部 |     5 |</span><br><span class="line">| 蔡文姬 |   1500 | 销售部 |     3 |</span><br><span class="line">| 阿珂   |   1100 | 调研部 |     1 |</span><br><span class="line">| 刘备   |    950 | 销售部 |     1 |</span><br><span class="line">| 诸葛亮 |   3000 | 调研部 |     4 |</span><br><span class="line">| 鲁班   |   1300 | 财务部 |     2 |</span><br><span class="line">+--------+--------+--------+-------+</span><br><span class="line">14 rows in set (0.04 sec)</span><br></pre></td></tr></table></figure>
+
+<p>也可以用以下SQL语句查询：</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT e.ename,e.salary,d.dname,g.grade FROM emp e,dept d,salgrade g</span><br><span class="line">WHERE e.deptno = d.deptno</span><br><span class="line">AND e.salary &gt;= g.lowSalary AND e.salary &lt;= g.highSalary;</span><br><span class="line">+--------+--------+--------+-------+</span><br><span class="line">| ename  | salary | dname  | grade |</span><br><span class="line">+--------+--------+--------+-------+</span><br><span class="line">| 孙悟空 |    800 | 调研部 |     1 |</span><br><span class="line">| 孙尚香 |   1600 | 销售部 |     3 |</span><br><span class="line">| 李白   |   1250 | 销售部 |     2 |</span><br><span class="line">| 程咬金 |   2975 | 调研部 |     4 |</span><br><span class="line">| 妲己   |   1250 | 销售部 |     2 |</span><br><span class="line">| 兰陵王 |   2854 | 销售部 |     4 |</span><br><span class="line">| 虞姬   |   2450 | 财务部 |     4 |</span><br><span class="line">| 项羽   |   3000 | 调研部 |     4 |</span><br><span class="line">| 张飞   |   5000 | 财务部 |     5 |</span><br><span class="line">| 蔡文姬 |   1500 | 销售部 |     3 |</span><br><span class="line">| 阿珂   |   1100 | 调研部 |     1 |</span><br><span class="line">| 刘备   |    950 | 销售部 |     1 |</span><br><span class="line">| 诸葛亮 |   3000 | 调研部 |     4 |</span><br><span class="line">| 鲁班   |   1300 | 财务部 |     2 |</span><br><span class="line">+--------+--------+--------+-------+</span><br><span class="line">14 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="6-3-2-外连接"><a href="#6-3-2-外连接" class="headerlink" title="6.3.2 外连接"></a>6.3.2 外连接</h3><ul>
+<li><p>左外连接（左连接）</p>
+<blockquote>
+<p>两表满足条件相同的数据查出来，如果左边表当中有不相同的数据，也把左边表当中的数据查出来。<br><code>左边表当中的数据全部查出</code>，右边表当中，只查出满足条件的内容<br><img src="MySQL-02/39.png" alt="01"></p>
+</blockquote>
+<ul>
+<li><p>使用<code>内连接</code>时，周七不会查出来，没有成绩，缺考了。即结果集中连周七这个人都没有了，不知道的还以为没有周七这个人，只把考过试的学生分数查出来了。</p>
+<ul>
+<li><p>① 使用条件查询</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT st.name,sc.score,sc.km FROM stu st,score sc</span><br><span class="line">WHERE st.id = sc.sid;</span><br><span class="line">+------+-------+------+</span><br><span class="line">| name | score | km   |</span><br><span class="line">+------+-------+------+</span><br><span class="line">| 张三 |    90 | 语文 |</span><br><span class="line">| 张三 |    60 | 数学 |</span><br><span class="line">| 李四 |    90 | 英语 |</span><br><span class="line">| 王五 |    70 | 数学 |</span><br><span class="line">| 赵六 |    60 | 语文 |</span><br><span class="line">+------+-------+------+</span><br><span class="line">5 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p>② 使用内连接查询</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT st.name,sc.score,sc.km FROM stu st</span><br><span class="line">INNER JOIN score sc ON st.id = sc.sid;</span><br><span class="line">+------+-------+------+</span><br><span class="line">| name | score | km   |</span><br><span class="line">+------+-------+------+</span><br><span class="line">| 张三 |    90 | 语文 |</span><br><span class="line">| 张三 |    60 | 数学 |</span><br><span class="line">| 李四 |    90 | 英语 |</span><br><span class="line">| 王五 |    70 | 数学 |</span><br><span class="line">| 赵六 |    60 | 语文 |</span><br><span class="line">+------+-------+------+</span><br><span class="line">5 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>而使用<code>左外连接</code>查询所有学生及学生的考试分数时<br>左连接会把左表当中的数据全部查出，右表当中只查出满足条件的数据<br>可以省略OUTER不写<br>查询时，两个表可以不需要建立主外键约束</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">-- 学生表为左表，分数表为右表</span><br><span class="line">mysql&gt; </span><br><span class="line">SELECT st.name,sc.score,sc.km FROM stu st</span><br><span class="line">LEFT OUTER JOIN score sc ON st.id = sc.sid;</span><br><span class="line">+------+-------+------+</span><br><span class="line">| name | score | km   |</span><br><span class="line">+------+-------+------+</span><br><span class="line">| 张三 |    90 | 语文 |</span><br><span class="line">| 张三 |    60 | 数学 |</span><br><span class="line">| 李四 |    90 | 英语 |</span><br><span class="line">| 王五 |    70 | 数学 |</span><br><span class="line">| 赵六 |    60 | 语文 |</span><br><span class="line">| 周七 |  NULL | NULL |</span><br><span class="line">+------+-------+------+</span><br><span class="line">6 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>右外连接（右连接）</p>
+<blockquote>
+<p>右连接会把右表当中的数据全部查出，左表当中只查出满足条件的数据</p>
+</blockquote>
+<p>右边表当中的所有数据全部查出，左边表只查出满足条件的记录<br>站在表的角度去看，使用左连接就把左边表当中的内容全部查出，右边查出满足条件的。<br>使用右连接，就把右边表当中的数据全部查出。左边查出满足条件的。</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">-- 学生表为左表，分数表为右表</span><br><span class="line">mysql&gt; </span><br><span class="line">SELECT st.name,sc.score,sc.km FROM stu st</span><br><span class="line">RIGHT JOIN score sc ON st.id = sc.sid;</span><br><span class="line">+------+-------+------+</span><br><span class="line">| name | score | km   |</span><br><span class="line">+------+-------+------+</span><br><span class="line">| 张三 |    90 | 语文 |</span><br><span class="line">| 张三 |    60 | 数学 |</span><br><span class="line">| 李四 |    90 | 英语 |</span><br><span class="line">| 王五 |    70 | 数学 |</span><br><span class="line">| 赵六 |    60 | 语文 |</span><br><span class="line">+------+-------+------+</span><br><span class="line">5 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="6-3-3-自然连接"><a href="#6-3-3-自然连接" class="headerlink" title="6.3.3 自然连接"></a>6.3.3 自然连接</h3><blockquote>
+<p>连接查询会产生无用笛卡尔集，我们通常使用主外键关系等式来去除它。<br>而自然连接无需你去给出主外键等式，它会自动找到这一等式，也就是说不用去写条件。</p>
+</blockquote>
+<ul>
+<li>要求：<br>两张连接的表中列名称和类型完全一致的列作为条件<br>会去除相同的列</li>
+</ul>
+<h2 id="6-4-子查询"><a href="#6-4-子查询" class="headerlink" title="6.4 子查询"></a>6.4 子查询</h2><ul>
+<li><p>什么是子查询</p>
+<blockquote>
+<p>一个select语句中包含另一个完整的select语句。<br>或两个以上SELECT，那么就是子查询语句了。</p>
+</blockquote>
+</li>
+<li><p>子查询出现的位置</p>
+<blockquote>
+<p>where后，把select查询出的结果当作另一个select的条件值<br>from后，把查询出的结果当作一个新表；</p>
+</blockquote>
+</li>
+<li><p>示例表：<br><img src="MySQL-02/41.png" alt="01"></p>
+</li>
+<li><p>使用：</p>
+<ul>
+<li><p><strong>查询与项羽同一个部门人员工</strong><br>1.先查出项羽所在的部门编号<br><code>SELECT deptno FROM emp WHERE ename = &#39;项羽&#39;;</code><br>2.再根据部门编号查同一部门的员工（把第1条查出来的结果当第2条语句的条件）</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT ename,deptno FROM emp</span><br><span class="line">WHERE deptno = (SELECT deptno FROM emp WHERE ename = &#x27;项羽&#x27;);</span><br><span class="line">+--------+--------+</span><br><span class="line">| ename  | deptno |</span><br><span class="line">+--------+--------+</span><br><span class="line">| 孙悟空 |     20 |</span><br><span class="line">| 程咬金 |     20 |</span><br><span class="line">| 项羽   |     20 |</span><br><span class="line">| 阿珂   |     20 |</span><br><span class="line">| 诸葛亮 |     20 |</span><br><span class="line">+--------+--------+</span><br><span class="line">5 rows in set (0.03 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>查询工资高于程咬金的员工</strong><br>1.查出程咬金的工资<br><code>SELECT salary FROM emp WHERE ename = &#39;程咬金&#39;;</code><br>2.再去根据查出的结果查询出大于该值的记录员工名称</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT ename,salary FROM emp</span><br><span class="line">WHERE salary &gt; (SELECT salary FROM emp WHERE ename = &#x27;程咬金&#x27;);</span><br><span class="line">+--------+--------+</span><br><span class="line">| ename  | salary |</span><br><span class="line">+--------+--------+</span><br><span class="line">| 项羽   |   3000 |</span><br><span class="line">| 张飞   |   5000 |</span><br><span class="line">| 诸葛亮 |   3000 |</span><br><span class="line">+--------+--------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>查询工资高于30号部门所有人的工资的员工信息</strong><br>1.先查出30号部门工资最高的那个人<br><code>SELECT MAX(salary) FROM emp WHERE deptno = 30;</code><br>2.再到整个表中查询大于30号部门最高工资的员工信息</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT * FROM emp</span><br><span class="line">WHERE salary &gt; (SELECT MAX(salary) FROM emp WHERE deptno = 30);</span><br><span class="line">+-------+--------+--------+------+------------+--------+------+--------+</span><br><span class="line">| empno | ename  | job    | mgr  | hiredate   | salary | comm | deptno |</span><br><span class="line">+-------+--------+--------+------+------------+--------+------+--------+</span><br><span class="line">|  7566 | 程咬金 | 经理   | 7839 | 2011-04-02 |   2975 | NULL |     20 |</span><br><span class="line">|  7788 | 项羽   | 检查员 | 7566 | 2017-04-19 |   3000 | NULL |     20 |</span><br><span class="line">|  7839 | 张飞   | 总裁   | NULL | 2010-06-12 |   5000 | NULL |     10 |</span><br><span class="line">|  7902 | 诸葛亮 | 检查员 | 7566 | 2011-12-03 |   3000 | NULL |     20 |</span><br><span class="line">+-------+--------+--------+------+------------+--------+------+--------+</span><br><span class="line">4 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>查询<code>工作和工资</code>与妲己完全相同的员工信息</strong><br>1.先查出妲已的<code>工作和工资</code><br><code>SELECT job,salary FROM emp WHERE ename = &#39;妲己&#39;;</code><br>2.根据查询结果当作条件再去查询<code>工作和工资</code>相同的员工<br>由于是两个条件，使用 IN进行判断</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT ename,job,salary FROM emp</span><br><span class="line">WHERE (job,salary) IN (SELECT job,salary FROM emp WHERE ename = &#x27;妲己&#x27;);</span><br><span class="line">+-------+----------+--------+</span><br><span class="line">| ename | job      | salary |</span><br><span class="line">+-------+----------+--------+</span><br><span class="line">| 李白  | 销售人员 |   1250 |</span><br><span class="line">| 妲己  | 销售人员 |   1250 |</span><br><span class="line">+-------+----------+--------+</span><br><span class="line">2 rows in set (0.01 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>查询有2个以上直接下属的员工信息</strong><br>1.对所有的上级编号进行分组</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT mgr,GROUP_CONCAT(mgr) FROM emp GROUP BY mgr;</span><br><span class="line">+------+--------------------------+</span><br><span class="line">| mgr  | GROUP_CONCAT(mgr)        |</span><br><span class="line">+------+--------------------------+</span><br><span class="line">| NULL | NULL                     |</span><br><span class="line">| 7566 | 7566,7566                |</span><br><span class="line">| 7698 | 7698,7698,7698,7698,7698 |</span><br><span class="line">| 7782 | 7782                     |</span><br><span class="line">| 7788 | 7788                     |</span><br><span class="line">| 7839 | 7839,7839,7839           |</span><br><span class="line">| 7902 | 7902                     |</span><br><span class="line">+------+--------------------------+</span><br><span class="line">7 rows in set (0.04 sec)</span><br></pre></td></tr></table></figure>
+
+<p>2.找出大于2个的，大于2个说明有两个下属</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT mgr,GROUP_CONCAT(mgr) FROM emp GROUP BY mgr</span><br><span class="line">HAVING COUNT(*) &gt;= 2;</span><br><span class="line">+------+--------------------------+</span><br><span class="line">| mgr  | GROUP_CONCAT(mgr)        |</span><br><span class="line">+------+--------------------------+</span><br><span class="line">| 7566 | 7566,7566                |</span><br><span class="line">| 7698 | 7698,7698,7698,7698,7698 |</span><br><span class="line">| 7839 | 7839,7839,7839           |</span><br><span class="line">+------+--------------------------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>3.把上条的结果当作员工编号时行查询</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT * FROM emp</span><br><span class="line">WHERE empno IN (SELECT mgr FROM emp GROUP BY mgr HAVING COUNT(*) &gt;=2);</span><br><span class="line">+-------+--------+------+------+------------+--------+------+--------+</span><br><span class="line">| empno | ename  | job  | mgr  | hiredate   | salary | comm | deptno |</span><br><span class="line">+-------+--------+------+------+------------+--------+------+--------+</span><br><span class="line">|  7566 | 程咬金 | 经理 | 7839 | 2011-04-02 |   2975 | NULL |     20 |</span><br><span class="line">|  7698 | 兰陵王 | 经理 | 7839 | 2011-05-01 |   2854 | NULL |     30 |</span><br><span class="line">|  7839 | 张飞   | 总裁 | NULL | 2010-06-12 |   5000 | NULL |     10 |</span><br><span class="line">+-------+--------+------+------+------------+--------+------+--------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>查询员工编号为7788的员工名称、员工工资、部门名称、部门地址</strong></p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT e.ename,e.salary,d.dname,d.local FROM emp e,dept d</span><br><span class="line">WHERE e.deptno = d.deptno</span><br><span class="line">AND empno = 7788;</span><br><span class="line">+-------+--------+--------+-------+</span><br><span class="line">| ename | salary | dname  | local |</span><br><span class="line">+-------+--------+--------+-------+</span><br><span class="line">| 项羽  |   3000 | 调研部 | 上海  |</span><br><span class="line">+-------+--------+--------+-------+</span><br><span class="line">1 row in set (0.06 sec)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h2 id="6-5-自连接"><a href="#6-5-自连接" class="headerlink" title="6.5 自连接"></a>6.5 自连接</h2><ul>
+<li><p>求7369员工编号、姓名、经理编号和经理姓名</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT * FROM emp</span><br><span class="line">WHERE empno = (SELECT mgr FROM emp WHERE empno = 7369);</span><br><span class="line">+-------+--------+--------+------+------------+--------+------+--------+</span><br><span class="line">| empno | ename  | job    | mgr  | hiredate   | salary | comm | deptno |</span><br><span class="line">+-------+--------+--------+------+------------+--------+------+--------+</span><br><span class="line">|  7902 | 诸葛亮 | 检查员 | 7566 | 2011-12-03 |   3000 | NULL |     20 |</span><br><span class="line">+-------+--------+--------+------+------------+--------+------+--------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>以上这种方法只能查询出一个经理的名称<br>自连接：自己连接自己，起别名<br><code>SELECT * FROM emp e1,emp e2 WHERE e1.mgr = e2.empno AND e1.empno = 7369;</code></p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT * FROM emp e1,emp e2 WHERE e1.mgr = e2.empno AND e1.empno = 7369;</span><br><span class="line">+-------+--------+------+------+------------+--------+------+--------+-------+--------+--------+------+------------+--------+------+--------+</span><br><span class="line">| empno | ename  | job  | mgr  | hiredate   | salary | comm | deptno | empno | ename  | job    | mgr  | hiredate   | salary | comm | deptno |</span><br><span class="line">+-------+--------+------+------+------------+--------+------+--------+-------+--------+--------+------+------------+--------+------+--------+</span><br><span class="line">|  7369 | 孙悟空 | 职员 | 7902 | 2010-12-17 |    800 | NULL |     20 |  7902 | 诸葛亮 | 检查员 | 7566 | 2011-12-03 |   3000 | NULL |     20 |</span><br><span class="line">+-------+--------+------+------+------------+--------+------+--------+-------+--------+--------+------+------------+--------+------+--------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="七-常用函数"><a href="#七-常用函数" class="headerlink" title="七.常用函数"></a>七.常用函数</h1><ul>
+<li>函数介绍<br>事先提供好的一些功能可以直接使用<br>函数可以用在SELECT语句及其子句<br>也可以用在UPDATE,DELETE语句当中。</li>
+<li>函数分类<ul>
+<li>字符串函数</li>
+<li>数值函数</li>
+<li>日期和时间函数</li>
+<li>流程函数</li>
+<li>其它函数</li>
+</ul>
+</li>
+</ul>
+<h2 id="7-1-字符串函数"><a href="#7-1-字符串函数" class="headerlink" title="7.1 字符串函数"></a>7.1 字符串函数</h2><ul>
+<li><p><code>concat(s1,s2...sn)</code>：将传入的字符连接成一个字符串</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT CONCAT(&#x27;aaa&#x27;,&#x27;bbb&#x27;,&#x27;ccc&#x27;);</span><br><span class="line">+---------------------------+</span><br><span class="line">| CONCAT(&#x27;aaa&#x27;,&#x27;bbb&#x27;,&#x27;ccc&#x27;) |</span><br><span class="line">+---------------------------+</span><br><span class="line">| aaabbbccc                 |</span><br><span class="line">+---------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>任何字符串与null进行连接结果都是null</p>
+</blockquote>
+</li>
+<li><p><code>insert(str,x,y,instr)</code>：将字符串str从x位置开始，y个字符长的子串替换为指定的字符</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT INSERT(&#x27;myxq123&#x27;,5,3,&#x27;lk&#x27;);</span><br><span class="line">+----------------------------+</span><br><span class="line">| INSERT(&#x27;myxq123&#x27;,5,3,&#x27;lk&#x27;) |</span><br><span class="line">+----------------------------+</span><br><span class="line">| myxqlk                     |</span><br><span class="line">+----------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p><code>LOWER(Str)和UPPER(str)</code>：将字符串转成小写或大写</p>
+</li>
+<li><p><code>LEFT(str,x)和RIGHT(str，x)</code>：分别返回字符串最左边的x个字符和最右边的x个字符</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT LEFT(&#x27;shanghai&#x27;,3);</span><br><span class="line">+--------------------+</span><br><span class="line">| LEFT(&#x27;shanghai&#x27;,3) |</span><br><span class="line">+--------------------+</span><br><span class="line">| sha                |</span><br><span class="line">+--------------------+</span><br><span class="line">1 row in set (0.04 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; SELECT RIGHT(&#x27;shanghai&#x27;,3);</span><br><span class="line">+---------------------+</span><br><span class="line">| RIGHT(&#x27;shanghai&#x27;,3) |</span><br><span class="line">+---------------------+</span><br><span class="line">| hai                 |</span><br><span class="line">+---------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果第二个参数为null，那么不返回任何字符</p>
+</blockquote>
+</li>
+<li><p><code>LPAD（str,n,pad）和RPAD(str,n,pad)</code>：用字符串pad对str最左边或最右边进行填充，直接到长度为n个字符长度</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT LPAD(&#x27;my&#x27;,5,123456);</span><br><span class="line">+---------------------+</span><br><span class="line">| LPAD(&#x27;my&#x27;,5,123456) |</span><br><span class="line">+---------------------+</span><br><span class="line">| 123my               |</span><br><span class="line">+---------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; SELECT RPAD(&#x27;my&#x27;,6,123456);</span><br><span class="line">+---------------------+</span><br><span class="line">| RPAD(&#x27;my&#x27;,6,123456) |</span><br><span class="line">+---------------------+</span><br><span class="line">| my1234              |</span><br><span class="line">+---------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p><code>LTRIM(str)和RTRIM(str)</code>：去掉字符串当中最左侧和最右侧的空格</p>
+</li>
+<li><p><code>TRIM(str)</code>：去掉字符串左右的空格</p>
+</li>
+<li><p><code>REPEAT(str,x)</code>：返回str重复x次的结果</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT repeat(&#x27;mysql&#x27;,10);</span><br><span class="line">+----------------------------------------------------+</span><br><span class="line">| repeat(&#x27;mysql&#x27;,10)                                 |</span><br><span class="line">+----------------------------------------------------+</span><br><span class="line">| mysqlmysqlmysqlmysqlmysqlmysqlmysqlmysqlmysqlmysql |</span><br><span class="line">+----------------------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p><code>REPLACE(str,a,b)</code>：用字符串b替换字符串str中所有出现的字符串a.</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT replace(&#x27;myxqx&#x27;,&#x27;x&#x27;,&#x27;q&#x27;);</span><br><span class="line">+--------------------------+</span><br><span class="line">| replace(&#x27;myxqx&#x27;,&#x27;x&#x27;,&#x27;q&#x27;) |</span><br><span class="line">+--------------------------+</span><br><span class="line">| myqqq                    |</span><br><span class="line">+--------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p><code>SUBSTRING(str,x,y)</code>：返回字符串str中第x位置起y个字符长度的字符</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT substr(&#x27;myxq&#x27;,&#x27;2&#x27;,&#x27;3&#x27;);</span><br><span class="line">+------------------------+</span><br><span class="line">| substr(&#x27;myxq&#x27;,&#x27;2&#x27;,&#x27;3&#x27;) |</span><br><span class="line">+------------------------+</span><br><span class="line">| yxq                    |</span><br><span class="line">+------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="7-2-数值函数"><a href="#7-2-数值函数" class="headerlink" title="7.2 数值函数"></a>7.2 数值函数</h2><ul>
+<li><code>ABS(x)</code>：返回X的绝对值</li>
+<li><code>CEIL(x)</code>：小数不为零部分上取整，即向上取最近的整数</li>
+<li><code>FLOOR(x)</code>：小数部分下取整，即向下取最近的整数</li>
+<li><code>MOD(X,Y)</code>：返回X/Y的模</li>
+<li><code>RAND()</code>：返回0-1内容的随机值</li>
+</ul>
+<h2 id="7-3-日期和时间函数"><a href="#7-3-日期和时间函数" class="headerlink" title="7.3 日期和时间函数"></a>7.3 日期和时间函数</h2><ul>
+<li><p><code>CURDATE()</code>：返回当前日期，只包含年月日</p>
+</li>
+<li><p><code>CURTIME()</code>：返回当前时间，只包含时分秒</p>
+</li>
+<li><p><code>NOW()</code>：返回当前日期和时间，年月日时分秒都包含</p>
+</li>
+<li><p><code>UNIX_TIMESTAMP</code>：返回当前日期的时间戳</p>
+</li>
+<li><p><code>FROM_UNIXTIME(unixtime)</code>：将一个时间戳转换成日期</p>
+</li>
+<li><p><code>WEEK(DATE)</code>：返回当前是一年中的第几周</p>
+</li>
+<li><p><code>YEAR(DATE)</code>：返回所给日期是那一年</p>
+</li>
+<li><p><code>HOUR(TIME)</code>：返回当前时间的小时</p>
+</li>
+<li><p><code>MINUTE(TIME)</code>：返回当前时间的分钟</p>
+</li>
+<li><p><code>DATE_FORMAT(date,fmt)</code>：按字符串格式化日期date值</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; </span><br><span class="line">SELECT DATE_FORMAT(now(),&#x27;%M,%D,%Y&#x27;);</span><br><span class="line">+-------------------------------+</span><br><span class="line">| DATE_FORMAT(now(),&#x27;%M,%D,%Y&#x27;) |</span><br><span class="line">+-------------------------------+</span><br><span class="line">| August,2nd,2019               |</span><br><span class="line">+-------------------------------+</span><br><span class="line">1 row in set (0.06 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p><code>DATE_ADD(date,interval expr type)</code>：计算日期间隔</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT DATE_ADD(now(),interval 31 day);</span><br><span class="line">+---------------------------------+</span><br><span class="line">| DATE_ADD(now(),interval 31 day) |</span><br><span class="line">+---------------------------------+</span><br><span class="line">| 2019-09-02 18:36:32             |</span><br><span class="line">+---------------------------------+</span><br><span class="line">1 row in set (0.04 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p><code>DATEDIFF(date1,date2)</code>：计算两个日期相差的天数</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT DATEDIFF(&#x27;2018-01-01&#x27;,now());</span><br><span class="line">+------------------------------+</span><br><span class="line">| DATEDIFF(&#x27;2018-01-01&#x27;,now()) |</span><br><span class="line">+------------------------------+</span><br><span class="line">|                         -578 |</span><br><span class="line">+------------------------------+</span><br><span class="line">1 row in set (0.04 sec)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="7-4-流程函数"><a href="#7-4-流程函数" class="headerlink" title="7.4 流程函数"></a>7.4 流程函数</h2><ul>
+<li><p>IF(value,a,b)<br>如果value是真，返回a,否则返回b</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT IF(2&gt;3,&#x27;是&#x27;,&#x27;否&#x27;);</span><br><span class="line">+-------------------+</span><br><span class="line">| IF(2&gt;3,&#x27;是&#x27;,&#x27;否&#x27;) |</span><br><span class="line">+-------------------+</span><br><span class="line">| 否                |</span><br><span class="line">+-------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p>IFNULL(value1,value2)<br>如果value1不为空，返回value1否者返回value2</p>
+</li>
+<li><p>CASE WHEN THEN END</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT case when 2&gt;3 then &#x27;对&#x27; else &#x27;错&#x27; end;</span><br><span class="line">+---------------------------------------+</span><br><span class="line">| case when 2&gt;3 then &#x27;对&#x27; else &#x27;错&#x27; end |</span><br><span class="line">+---------------------------------------+</span><br><span class="line">| 错                                    |</span><br><span class="line">+---------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="7-5-其他常用函数"><a href="#7-5-其他常用函数" class="headerlink" title="7.5 其他常用函数"></a>7.5 其他常用函数</h2><ul>
+<li><code>DATABASE()</code>：返回当前数据库名</li>
+<li><code>VERSION()</code>：返回当前数据库版本</li>
+<li><code>USER()</code>：返回当前登陆用户名</li>
+<li><code>PASSWORD(STR)</code>：对str进行加密</li>
+<li><code>MD5()</code>：返回str的MD5值</li>
+</ul>
+<p>————————————–本文结束感谢您的阅读————————————–</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">ICodeZhan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章連結: </span><span class="post-copyright-info"><a href="http://example.com/2021/10/09/MySQL-02/">http://example.com/2021/10/09/MySQL-02/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="http://example.com" target="_blank">ICodeZhan's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/10/09/MySQL-03/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">MySQL知识笔记（三）</div></div></a></div><div class="next-post pull-right"><a href="/2021/10/09/MySQL-01/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">MySQL知识笔记（一）</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">ICodeZhan</div><div class="author-info__description">“江湖再见”</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">標籤</div><div class="length-num">2</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分類</div><div class="length-num">1</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94-%E5%88%86%E7%BB%84%E6%9F%A5%E8%AF%A2%E5%92%8C%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="toc-number">1.</span> <span class="toc-text">五. 分组查询和完整性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#5-1-%E5%88%86%E7%BB%84%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.1.</span> <span class="toc-text">5.1 分组查询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-2-LIMIT"><span class="toc-number">1.2.</span> <span class="toc-text">5.2 LIMIT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-3-%E6%95%B0%E6%8D%AE%E7%9A%84%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="toc-number">1.3.</span> <span class="toc-text">5.3 数据的完整性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-4-%E5%AE%9E%E4%BD%93%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="toc-number">1.4.</span> <span class="toc-text">5.4 实体完整性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-5-%E5%9F%9F%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="toc-number">1.5.</span> <span class="toc-text">5.5 域完整性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-6-%E5%8F%82%E7%85%A7%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="toc-number">1.6.</span> <span class="toc-text">5.6 参照完整性</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%AD-%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2"><span class="toc-number">2.</span> <span class="toc-text">六. 多表查询</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#6-1-%E8%A1%A8%E4%B9%8B%E9%97%B4%E5%85%B3%E7%B3%BB"><span class="toc-number">2.1.</span> <span class="toc-text">6.1 表之间关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-2-%E5%90%88%E5%B9%B6%E7%BB%93%E6%9E%9C%E9%9B%86"><span class="toc-number">2.2.</span> <span class="toc-text">6.2 合并结果集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-3-%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="toc-number">2.3.</span> <span class="toc-text">6.3 连接查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-1-%E5%86%85%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.3.1.</span> <span class="toc-text">6.3.1 内连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-2-%E5%A4%96%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.3.2.</span> <span class="toc-text">6.3.2 外连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-3-%E8%87%AA%E7%84%B6%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.3.3.</span> <span class="toc-text">6.3.3 自然连接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-4-%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">2.4.</span> <span class="toc-text">6.4 子查询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-5-%E8%87%AA%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.5.</span> <span class="toc-text">6.5 自连接</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%83-%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">七.常用函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#7-1-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">7.1 字符串函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-2-%E6%95%B0%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.</span> <span class="toc-text">7.2 数值函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-3-%E6%97%A5%E6%9C%9F%E5%92%8C%E6%97%B6%E9%97%B4%E5%87%BD%E6%95%B0"><span class="toc-number">3.3.</span> <span class="toc-text">7.3 日期和时间函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-4-%E6%B5%81%E7%A8%8B%E5%87%BD%E6%95%B0"><span class="toc-number">3.4.</span> <span class="toc-text">7.4 流程函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-5-%E5%85%B6%E4%BB%96%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0"><span class="toc-number">3.5.</span> <span class="toc-text">7.5 其他常用函数</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/10/09/JQuery%E7%9F%A5%E8%AF%86%E7%AC%94%E8%AE%B0/" title="JQuery知识笔记"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JQuery知识笔记"/></a><div class="content"><a class="title" href="/2021/10/09/JQuery%E7%9F%A5%E8%AF%86%E7%AC%94%E8%AE%B0/" title="JQuery知识笔记">JQuery知识笔记</a><time datetime="2021-10-09T13:43:57.000Z" title="發表於 2021-10-09 21:43:57">2021-10-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/09/Ajax-JSON%E7%AC%94%E8%AE%B0/" title="Ajax&amp;JSON笔记"><img src="/cover/ajax.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Ajax&amp;JSON笔记"/></a><div class="content"><a class="title" href="/2021/10/09/Ajax-JSON%E7%AC%94%E8%AE%B0/" title="Ajax&amp;JSON笔记">Ajax&amp;JSON笔记</a><time datetime="2021-10-09T13:42:38.000Z" title="發表於 2021-10-09 21:42:38">2021-10-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/09/MySQL-03/" title="MySQL知识笔记（三）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL知识笔记（三）"/></a><div class="content"><a class="title" href="/2021/10/09/MySQL-03/" title="MySQL知识笔记（三）">MySQL知识笔记（三）</a><time datetime="2021-10-09T13:40:03.000Z" title="發表於 2021-10-09 21:40:03">2021-10-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/09/MySQL-02/" title="MySQL知识笔记（二）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL知识笔记（二）"/></a><div class="content"><a class="title" href="/2021/10/09/MySQL-02/" title="MySQL知识笔记（二）">MySQL知识笔记（二）</a><time datetime="2021-10-09T13:39:53.000Z" title="發表於 2021-10-09 21:39:53">2021-10-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/10/09/MySQL-01/" title="MySQL知识笔记（一）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL知识笔记（一）"/></a><div class="content"><a class="title" href="/2021/10/09/MySQL-01/" title="MySQL知识笔记（一）">MySQL知识笔记（一）</a><time datetime="2021-10-09T13:39:44.000Z" title="發表於 2021-10-09 21:39:44">2021-10-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021  <i id="heartbeat" class="fa fas fa-heartbeat"></i> ICodeZhan</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主題 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到頂部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜尋</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'xuKJasrJj8dd1eKMT1MvbA1T-gzGzoHsz',
+      appKey: 'yA40jOlzoHGjXmsPXvB3w5sp',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: true,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script src="/js/cursor.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"right","width":145,"height":315},"mobile":{"show":true,"scale":0.5},"react":{"opacityDefault":0.7,"opacityOnHover":0.8},"log":false});</script></body></html>
